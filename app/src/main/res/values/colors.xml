@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="browser_blue">#0B57D0</color>
+    <color name="browser_surface">#F7F9FC</color>
+    <color name="browser_nav">#FFFFFF</color>
+</resources>

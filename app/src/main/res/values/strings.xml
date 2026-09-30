@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">绿萝工具箱</string>
+    <string name="scheme_https">HTTPS</string>
+    <string name="scheme_http">HTTP</string>
+</resources>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>新标签页</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f7f9fc; --card:#fff; --text:#18212f; --muted:#687386; --green:#087f4f; --blue:#0b57d0; }
+    @media (prefers-color-scheme:dark) { :root { --bg:#111318; --card:#1d2027; --text:#eef2f8; --muted:#abb4c3; --green:#52c990; --blue:#8ab4f8; } }
+    * { box-sizing:border-box; }
+    html, body { width:100%; max-width:100%; overflow-x:hidden; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:22px; background:var(--bg); color:var(--text); font:16px system-ui,sans-serif; -webkit-text-size-adjust:100%; }
+    main { width:100%; max-width:620px; min-width:0; text-align:center; }
+    .mark { width:76px; height:76px; margin:auto; display:grid; place-items:center; border-radius:24px; background:linear-gradient(145deg,#8bdc52,#079c56); color:white; font-size:38px; box-shadow:0 12px 30px #079c5644; }
+    h1 { margin:16px 0 4px; font-size:26px; }
+    .intro { margin:0 0 20px; color:var(--muted); }
+    .panel { margin-top:14px; padding:14px; border-radius:20px; text-align:left; background:var(--card); box-shadow:0 7px 24px #00000012; }
+    .search-panel { border:2px solid #5b8ee4; background:linear-gradient(145deg,#f0f5ff,var(--card)); }
+    .tools-panel { border:1px solid #dbe3ec; }
+    @media (prefers-color-scheme:dark) { .search-panel { background:#172134; } .tools-panel { border-color:#343b47; } }
+    .url-section { margin-top:14px; text-align:left; }
+    .label { display:flex; align-items:center; justify-content:space-between; margin:0 2px 10px; font-weight:750; }
+    .url-section .label { color:var(--green); }
+    .search-panel .label { color:var(--blue); }
+    .tools-panel .label { color:var(--text); }
+    .badge { font-size:11px; font-weight:600; padding:3px 8px; border-radius:99px; background:#0000000b; color:var(--muted); }
+    form { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; min-width:0; }
+    .url-section form { grid-template-columns:minmax(0,1fr); gap:8px; }
+    .url-actions { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; }
+    input, select { min-width:0; border:1px solid #cbd3df; border-radius:12px; outline:0; padding:12px; font:inherit; color:var(--text); background:var(--card); }
+    input:focus, select:focus { border-color:currentColor; box-shadow:0 0 0 2px #4f8ee533; }
+    input { flex:1; }
+    select { width:100%; padding-left:12px; }
+    button { min-width:62px; border:0; border-radius:12px; padding:0 12px; color:white; font:700 15px system-ui,sans-serif; white-space:nowrap; }
+    .url-section button { background:#087f4f; }
+    .search-panel button { background:#0b57d0; }
+    .tool-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .tool-card { display:flex; align-items:center; gap:11px; min-height:68px; padding:11px; border:1px solid #b8e0ca; border-radius:16px; color:var(--text); background:linear-gradient(145deg,#effbf4,var(--card)); text-decoration:none; }
+    .tool-icon-wrap { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:13px; color:white; background:linear-gradient(145deg,#087f4f,#33a852); }
+    .scan-icon { width:25px; height:25px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .tool-copy { min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .tool-copy strong { color:var(--green); font-size:16px; }
+    .tool-copy small { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .note { margin-top:14px; font-size:12px; color:var(--muted); }
+    @media (max-width:390px) {
+      body { padding:16px; }
+      .panel { padding:12px; }
+      select { padding:10px; }
+      input { padding:10px; }
+      button { min-width:58px; padding:0 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark">🌿</div>
+    <h1>绿萝工具箱</h1>
+    <p class="intro">轻量、安静，默认拦截广告与跟踪请求</p>
+
+    <section class="url-section" aria-labelledby="url-label">
+      <div class="label" id="url-label"><span>🌐 打开网址</span><span class="badge">直接访问</span></div>
+      <form onsubmit="return openUrl(event)">
+        <input id="url-address" type="text" inputmode="url" autocapitalize="none" autocomplete="off" placeholder="例如 example.com/path" aria-label="网址">
+        <div class="url-actions">
+          <select id="url-scheme" aria-label="网址协议">
+            <option value="http" selected>HTTP（普通连接）</option>
+            <option value="https">HTTPS（安全连接）</option>
+          </select>
+          <button type="submit">打开</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel search-panel" aria-labelledby="search-label">
+      <div class="label" id="search-label"><span>🔎 搜索网页</span><span class="badge">{{SEARCH_NAME}}</span></div>
+      <form action="{{SEARCH_ACTION}}" method="get">
+        <input name="{{QUERY_PARAMETER}}" type="search" inputmode="search" placeholder="输入关键词" aria-label="搜索关键词">
+        <button type="submit">搜索</button>
+      </form>
+    </section>
+
+    <section class="panel tools-panel" aria-labelledby="tools-label">
+      <div class="label" id="tools-label"><span>🧰 工具</span><span class="badge">常用</span></div>
+      <div class="tool-grid">
+        <a class="tool-card" href="lvluo://scan">
+          <span class="tool-icon-wrap">
+            <svg class="scan-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3M7 12h10"/>
+            </svg>
+          </span>
+          <span class="tool-copy"><strong>扫码</strong><small>二维码或条码</small></span>
+        </a>
+      </div>
+    </section>
+    <div class="note">网址框用于直接访问站点；搜索框将关键词发送到搜索引擎</div>
+  </main>
+  <script>
+    function openUrl(event) {
+      event.preventDefault();
+      const input = document.getElementById('url-address');
+      const raw = normalizeUrlText(input.value).trim();
+      input.value = raw;
+      if (!raw) { input.focus(); return false; }
+      const hasScheme = /^https?:\/\//i.test(raw);
+      window.location.href = hasScheme ? raw : document.getElementById('url-scheme').value + '://' + raw;
+      return false;
+    }
+
+    function normalizeUrlText(value) {
+      return value.replace(/：/g, ':').replace(/[。．]/g, '.');
+    }
+
+    document.getElementById('url-address').addEventListener('input', function () {
+      const caret = this.selectionStart;
+      const normalized = normalizeUrlText(this.value);
+      if (normalized !== this.value) {
+        this.value = normalized;
+        this.setSelectionRange(caret, caret);
+      }
+    });
+  </script>
+</body>
+</html>
